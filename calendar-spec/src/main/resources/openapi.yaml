@@ -1,0 +1,340 @@
+openapi: "3.0.3"
+info:
+  title: Calendar Spec
+  description: No description available
+  version: v1
+tags:
+  - name: 'slot'
+paths:
+  /v1/person/{personId}/slots:
+    get:
+      tags:
+        - slot
+      summary: get slots by person id
+      parameters:
+        - in: query
+          name: slotDateFrom
+          required: false
+          schema:
+            type: string
+            format: date-time
+          description: start date for search
+        - in: query
+          name: slotDateTo
+          required: false
+          schema:
+            type: string
+            format: date-time
+          description: end date for search
+      operationId: getSlotsByPerson
+      responses:
+        '200':
+          description: successful request
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PersonSlotItem'
+        '400':
+          description: business rules errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody'
+        '404':
+          description: person not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody'
+    post:
+      tags:
+        - slot
+      summary: save slot by person id
+      operationId: postSlotByPerson
+      requestBody:
+        description: person slot data to save
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostPersonSlotRequestBody'
+      responses:
+        '201':
+          description: successful request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostPersonSlotResponseBody'
+        '400':
+          description: business rules errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody'
+        '404':
+          description: person not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody'
+    parameters:
+    - name: personId
+      in: path
+      description: person identifier
+      required: true
+      schema:
+        type: string
+  /v1/person/{personId}/slots/bulk:
+    post:
+      tags:
+        - slot
+      summary: save slot by person id in bulk
+      operationId: postSlotByPersonBulk
+      requestBody:
+        description: person slots data to save in bulk
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/PostPersonSlotBulkRequestBody'
+      responses:
+        '207':
+          description: for each item passed, a response code of 201 will be returned if the slot is created successfully or 400 if item does not honor the contract
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PostPersonSlotBulkResponseBody'
+        '400':
+          description: business rules errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody'
+        '404':
+          description: person not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody'
+    delete:
+      tags:
+        - slot
+      summary: delete slot by person id in bulk
+      operationId: deleteSlotByPersonBulk
+      requestBody:
+        description: person slots ids to delete in bulk
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+      responses:
+        '207':
+          description: for each item passed, a response code of 200 will be returned if the slot is removed successfully or 400 if item does not honor the contract
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DeletePersonSlotBulkResponseBody'
+        '400':
+          description: business rules errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody'
+        '404':
+          description: person not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody'
+    parameters:
+    - name: personId
+      in: path
+      description: person identifier
+      required: true
+      schema:
+        type: string
+  /v1/person/{personId}/slots/{personSlotId}:
+    delete:
+      tags:
+        - slot
+      summary: delete person slot by id
+      operationId: deletePersonSlotById
+      responses:
+        '204':
+          description: successful request
+        '400':
+          description: business rules errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody'
+        '404':
+          description: person not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody'
+    parameters:
+    - name: personId
+      in: path
+      description: person identifier
+      required: true
+      schema:
+        type: string
+    - name: personSlotId
+      in: path
+      description: person slot identifier
+      required: true
+      schema:
+        type: string
+  /v1/slots/search-available:
+    post:
+      tags:
+        - slot
+      summary: search available slots
+      operationId: postSearchAvailableSlots
+      requestBody:
+        description: list of people ids
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+      responses:
+        '200':
+          description: successful request
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PostSearchAvailableResponseBody'
+        '400':
+          description: business rules errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody'
+components:
+  schemas:
+    PostPersonSlotRequestBody:
+      type: object
+      properties:
+        startDate:
+          type: string
+          format: date-time
+        endDate:
+          type: string
+          format: date-time
+    PostPersonSlotResponseBody:
+      type: object
+      properties:
+        id:
+          type: string
+    PostPersonSlotBulkRequestBody:
+      type: object
+      properties:
+        startDate:
+          type: string
+          format: date-time
+        endDate:
+          type: string
+          format: date-time
+    PostPersonSlotBulkResponseBody:
+      type: object
+      properties:
+        id:
+          type: string
+        startDate:
+          type: string
+          format: date-time
+        endDate:
+          type: string
+          format: date-time
+        status:
+          type: string
+          enum: [201, 204, 400, 404, 500]
+        message:
+          type: string
+    DeletePersonSlotBulkResponseBody:
+      type: object
+      properties:
+        id:
+          type: string
+        status:
+          type: string
+          enum: [201, 204, 400, 404, 500]
+        message:
+          type: string
+    PersonSlotItem:
+      properties:
+        id:
+          type: string
+        startDate:
+          type: string
+          format: date-time
+        endDate:
+          type: string
+          format: date-time
+    PostSearchAvailableResponseBody:
+      type: object
+      properties:
+        startDate:
+          type: string
+          format: date-time
+        endDate:
+          type: string
+          format: date-time
+    ErrorResponseBody:
+      properties:
+        message:
+          type: string       

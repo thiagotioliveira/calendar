@@ -1,0 +1,30 @@
+server:
+  port: 8080
+  
+logging.level:
+  root: INFO
+  #org:
+  #  hibernate:
+  #    SQL: DEBUG
+  #    type: TRACE
+  com.thiagoti.challenge.xgeeks.calendar.api: INFO
+
+spring:
+  h2:
+    console:
+      enabled: false
+      path: /calendardb
+  datasource:
+    url: jdbc:h2:mem:calendardb
+    driverClassName: org.h2.Driver
+    username: sa
+    password: password
+    initialization-mode: always
+  sql:
+    init.mode: always
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    properties.hibernate.format_sql: true
+    generate-ddl: true
+    hibernate:
+      ddl-auto: none

@@ -1,0 +1,3 @@
+logging:
+  level:
+    com.thiagoti.challenge.xgeeks.calendar.api: DEBUG
